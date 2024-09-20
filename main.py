@@ -29,7 +29,7 @@ def signup(email, password):
     try:
         user = auth.create_user_with_email_and_password(email, password)
         return user
-    except Exception as e:
+    except (Exception as e):
         error_message = str(e)
         if "INVALID_EMAIL" in error_message:
             st.error("The email address is badly formatted. Please check and try again.")
@@ -44,7 +44,7 @@ def login(email, password):
     try:
         user = auth.sign_in_with_email_and_password(email, password)
         return user
-    except Exception as e:
+    except (Exception as e):
         error_message = str(e)
         if "INVALID_EMAIL" in error_message:
             st.error("The email address is badly formatted. Please check and try again.")
