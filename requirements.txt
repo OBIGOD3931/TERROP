@@ -16,5 +16,3 @@ python-dotenv
 pyrebase
 firebase_admin
 streamlit_extras
-oauth2client
-pycryptodome
