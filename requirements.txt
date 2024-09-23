@@ -15,3 +15,5 @@ python-dotenv
 pyrebase
 firebase_admin
 streamlit_extras
+oauth2client==4.1.3
+pycryptodome==3.20.0
