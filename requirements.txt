@@ -15,4 +15,3 @@ python-dotenv
 pyrebase
 firebase_admin
 streamlit_extras
-python==3.12
