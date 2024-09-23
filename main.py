@@ -22,7 +22,7 @@ auth = firebase.auth()
 
 # Firebase Admin SDK Initialization
 cred = credentials.Certificate("terrop-cfb71-8a10226b5c48.json")
-#firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred)
 
 # Function to handle signup
 def signup(email, password):
