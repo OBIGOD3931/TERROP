@@ -5,16 +5,7 @@ from firebase_admin import credentials, auth
 from streamlit_extras.stylable_container import stylable_container
 
 # Firebase Configuration (from your Firebase Console)
-firebaseConfig = {
-  'apiKey': "AIzaSyCYEZ2AWi0gtntVFhbpLytTVzWF78R00DU",
-  'authDomain': "terrop-cfb71.firebaseapp.com",
-  'databaseURL': "https://terrop-cfb71-default-rtdb.firebaseio.com",
-  'projectId': "terrop-cfb71",
-  'storageBucket': "terrop-cfb71.appspot.com",
-  'messagingSenderId': "161712926661",
-  'appId': "1:161712926661:web:a5f4d9c108f7413291a5ac",
-  'measurementId': "G-80KS5MG0LY"
-}
+firebaseConfig = st.secrets["firebase"]
 
 # Initialize Firebase
 firebase = pyrebase.initialize_app(firebaseConfig)
