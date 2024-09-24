@@ -15,3 +15,5 @@ python-dotenv
 pyrebase
 firebase_admin
 streamlit_extras
+streamlit==1.38.0
+tenacity>=8.1.0,<9
