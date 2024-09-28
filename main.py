@@ -1,5 +1,4 @@
 import streamlit as st
-import pyrebase
 import firebase_admin
 from firebase_admin import credentials, auth
 from streamlit_extras.stylable_container import stylable_container
