@@ -59,7 +59,7 @@ def display_auth_form():
                     color: #efe1cc;
                 }
                 .st-emotion-cache-vdokb0.e1nzilvr4 {
-                    color: #a2a9a9
+                    color: #a2a9a9;
                 }
                 </style>
                 """
@@ -141,7 +141,7 @@ def app_main():
                     background-color: transparent;
                 }
                 </style>
-                """
+            """
             st.markdown(remove_bg_color, unsafe_allow_html=True)
 
             @st.cache_data
@@ -176,7 +176,6 @@ def app_main():
                     text-align: center;
                     font-weight: bold;
                     font-size: 80px;
-
                 }
                 #your-number-one-terrorism-predictor{
                     color: #f4f4eb;
@@ -257,7 +256,5 @@ def app_main():
 if __name__ == "__main__":
     # Initialize login state if not already set
     if 'logged_in' not in st.session_state:
-        st.session_state.logged_in = False
-
-    # Run the main app
+        st.session_state['logged_in'] = False
     app_main()
