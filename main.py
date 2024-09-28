@@ -12,8 +12,10 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
 # Firebase Admin SDK Initialization
-cred = credentials.Certificate("terrop-cfb71-8a10226b5c48.json")
-firebase_admin.initialize_app(cred)
+def init_firebase_admin():
+    if not firebase_admin._apps:  # Avoid re-initialization
+        cred = credentials.Certificate("terrop-cfb71-8a10226b5c48.json")
+        firebase_admin.initialize_app(cred)
 
 # Function to handle signup
 def signup(email, password):
@@ -68,14 +70,13 @@ def display_auth_form():
         if st.session_state.get('logged_in', False):
             st.subheader("You are logged in.")
             if st.button("Logout"):
-                logout()  # Call logout function
+                logout()
                 st.experimental_rerun()  # Optional: Rerun the app to reset the state
         else:
             choice = st.selectbox("Login/Signup", ["Login", "Signup"])
             if choice == "Signup":
                 st.subheader("Create a New Account")
 
-                # Signup form fields
                 username = st.text_input("Username (User ID)")
                 email = st.text_input("Email")
                 password = st.text_input("Password", type="password")
@@ -83,6 +84,7 @@ def display_auth_form():
 
                 if st.button("Create Account"):
                     if password == confirm_password:
+                        init_firebase_admin()
                         user = signup(email, password)
                         if user:
                             st.success(f"Account created successfully for {username}!")
@@ -97,30 +99,32 @@ def display_auth_form():
                 password = st.text_input("Password", type="password")
 
                 if st.button("Login"):
+                    init_firebase_admin()
                     user = login(email, password)
                     if user:
                         st.session_state.logged_in = True
                         st.session_state.user_info = user
                         st.success("Logged in successfully!")
-                st.info("Don`t have an account? Select Signup in the dropdown to create an account")
+                st.info("Don't have an account? Select Signup in the dropdown to create an account")
 
 # Main App Logic
 def app_main():
     # Set the webpage title and layout
     st.set_page_config(page_title="TERROP", page_icon='imag3.webp', layout="wide")
 
-    import joblib
-    import pandas as pd
+    # Lazy load heavy modules
+    def load_modules():
+        global joblib, pd, sqlite3, Image, OrdinalEncoder, LabelEncoder
+        import joblib
+        import pandas as pd
+        import sqlite3
+        from PIL import Image
+        from category_encoders import OrdinalEncoder
+        from sklearn.preprocessing import LabelEncoder
+
     from streamlit_option_menu import option_menu
-    import sqlite3
-    from PIL import Image
-    from category_encoders import OrdinalEncoder
-    from sklearn.preprocessing import LabelEncoder
     import time
     import base64
-
-    # Import your app modules
-    import home, visualizations, prediction, make_report, about
 
     class MultiApp:
         def __init__(self):
@@ -130,7 +134,6 @@ def app_main():
             self.apps.append({"title": title, "function": func})
 
         def run(self):
-
             # Inject custom CSS to remove background color
             remove_bg_color = """
                 <style>
@@ -161,7 +164,6 @@ def app_main():
                 '''
                 st.markdown(page_bg_img, unsafe_allow_html=True)
 
-            # Call this function at the start of your app to set the background image
             set_image_as_page_bg('images/header.jpg')
 
             hide_menu_style = """
@@ -181,10 +183,6 @@ def app_main():
                     text-align: center;
                     font-weight: bold;
                 }
-
-
-                <h1 id="">Your number one terrorism predictor<span data-testid="stHeaderActionElements" class="st-emotion-cache-gi0tri e1nzilvr1"><a href="#your-number-one-terrorism-predictor" class="st-emotion-cache-yinll1 e1nzilvr3"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></span></h1>
-                
                 </style>
             """
             st.markdown(hide_menu_style, unsafe_allow_html=True)
@@ -212,32 +210,34 @@ def app_main():
             elif app == "About":
                 about.app()
 
-            # For restricted pages, check if the user is logged in
+            # Restricted pages require login
             elif app == "Visualizations":
                 if st.session_state.get('logged_in', False):
+                    load_modules()
                     visualizations.app()
                 else:
                     st.title("WELCOME TO TERROP")
                     st.title("Your number one terrorism predictor")
                     col1, col2, col3 = st.columns([1, 1, 1])
                     with col2:
-
                         st.warning("Please log-in to view the Visualizations.")
                     display_auth_form()
 
             elif app == "Prediction":
                 if st.session_state.get('logged_in', False):
+                    load_modules()
                     prediction.app()
                 else:
                     st.title("WELCOME TO TERROP")
                     st.title("Your number one terrorism predictor")
                     col1, col2, col3 = st.columns([1, 1, 1])
                     with col2:
-                        st.warning("Please log-in to make prediction.")
+                        st.warning("Please log-in to make predictions.")
                     display_auth_form()
 
             elif app == "Make a Report":
                 if st.session_state.get('logged_in', False):
+                    load_modules()
                     make_report.app()
                 else:
                     st.title("WELCOME TO TERROP")
@@ -246,7 +246,6 @@ def app_main():
                     with col2:
                         st.warning("Please log-in to submit a report.")
                     display_auth_form()
-                    
 
             elif app == "Login/Signup":
                 display_auth_form()
