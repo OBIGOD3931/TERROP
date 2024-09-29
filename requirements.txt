@@ -2,6 +2,7 @@ matplotlib
 numpy
 pandas
 plotly
+pyrebase
 seaborn
 streamlit
 streamlit-option-menu
